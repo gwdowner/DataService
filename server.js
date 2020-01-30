@@ -23,9 +23,8 @@ mongoose.connect(process.env.DB_CONNECT, {
     }
 });
 
-//### delete me ##///
+// Run once the first time to generate data on startup //
 BatchJobs();
-// ### delete me ##//
 
 // run at the end of every day at 1 minute past midnight '1 0 * * *'
 nodeCron.schedule(process.env.BATCH_UPDATE_RATE, ()=>{
