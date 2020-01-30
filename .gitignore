@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 .env
+.nyc_output
