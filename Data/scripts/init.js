@@ -14,7 +14,7 @@ mongoose.connect(process.env.DB_CONNECT, {
     data = [{
         name: 'Sout west (SW)',
         codes: {
-             PV_Live: '22' ,
+             pv_live: '22' ,
              meteo_stat: '03839' 
         }
     }];

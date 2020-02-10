@@ -7,7 +7,8 @@
     "test": "nyc mocha test",
     "start": "node server.js",
     "coveralls": "nyc mocha test && nyc report --reporter=text-lcov | coveralls",
-    "db:init":"node Data/scripts/init.js"
+    "db:init": "node Data/scripts/init.js",
+    "dev": "nodemon server.js"
   },
   "author": "George W Downer",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "chai": "^4.2.0",
     "coveralls": "^3.0.9",
     "mocha": "^7.0.1",
+    "nodemon": "^2.0.2",
     "nyc": "^15.0.0",
     "sinon": "^8.1.1"
   }

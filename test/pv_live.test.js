@@ -11,8 +11,8 @@ describe('PV Live service handler tests', () => {
         [0, "2020-01-27T00:30:00Z", 0.0]
     ];
     let formattedData = [
-        { region: 0, time: 1580083200000, outputMW: 0.000705 },
-        { region: 0, time: 1580085000000, outputMW: 0 }
+        { region: 0, time: new Date(1580083200000), outputMW: 0.000705 },
+        { region: 0, time: new Date(1580085000000), outputMW: 0 }
     ];
 
     beforeEach(() => {
@@ -31,7 +31,7 @@ describe('PV Live service handler tests', () => {
         it("valid start and end", async () => {
             let result = await pv_live.getData("2020-01-28T12:00:00.000Z", "2020-01-30T15:24:53.815Z");
             sandbox.assert.calledOnce(axios.get);
-            assert.deepEqual(result, rawData, "expected raw data not returned");
+            assert.deepEqual(result, [formattedData[0]], "expected raw data not returned");
         });
     });
 
