@@ -26,6 +26,7 @@ async function run() {
             data.push(...mergedData); 
         }
 
+        console.log(`inserting ${data.length} entries`);
         // insert data into db
         await trainingData.insertMany(data);
 

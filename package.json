@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "nyc mocha test",
+    "test": "nyc mocha test/**",
     "start": "node server.js",
     "coveralls": "nyc mocha test && nyc report --reporter=text-lcov | coveralls",
     "db:init": "node Data/scripts/init.js",
