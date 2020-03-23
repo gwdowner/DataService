@@ -5,7 +5,7 @@ services:
   - docker
 install:
   - npm ci
-  - docker build -t dataservice:latest
+  - docker build -t gwdowner/dataservice:latest
   - docker images
 script:
   - npm run coveralls
