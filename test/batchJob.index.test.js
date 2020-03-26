@@ -5,9 +5,11 @@ const batchJob = require('../BatchJobs/index');
 
 const PV_Live = require('../3rdPartyServiceHandlers/pv_live');
 const meteo_stat = require('../3rdPartyServiceHandlers/meteo_stat');
+const met_office = require('../3rdPartyServiceHandlers/met_office')
 const trainingData = require('../Data/trainingData');
 const Update = require('../Data/update');
 const Region = require('../Data/region');
+const Forecast = require('../Data/forecast');
 
 process.env.DATA_START_DATE = '2020-01-28T12:00:00.000Z'
 
@@ -49,7 +51,11 @@ describe('batch job index tests', () => {
 
             sandbox.stub(Region, 'find').returns({ exec: () => { return regions; } });
             sandbox.stub(trainingData, 'insertMany').resolves({});
+            sandbox.stub(Forecast, 'deleteMany').resolves({});
+            sandbox.stub(Forecast, 'exists').returns(false);
+            sandbox.stub(Forecast.prototype, 'save').returns({});
             sandbox.stub(PV_Live, 'getData').resolves(formattedData);
+            sandbox.stub(met_office, 'getData').resolves(formattedData);
             sandbox.stub(Update, 'findOne').returns(mockFindOne);
             sandbox.stub(Update.prototype, 'save').returns();
             sandbox.stub(console, 'log').returns();

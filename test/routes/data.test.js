@@ -5,7 +5,7 @@ const assert = require('chai').assert;
 const data = require('../../routes/data');
 
 const trainingData = require('../../Data/trainingData');
-
+const Forecast = require('../../Data/forecast');
 
 describe('Data router tests', () => {
     let req = {
@@ -36,7 +36,7 @@ describe('Data router tests', () => {
             temperature: 6,
             windspeed: 20.5,
             condition: 17,
-            time: new Date( 'y2020-01-28T14:00:00.000Z')
+            time: new Date( '2020-01-28T14:00:00.000Z')
           }
 
     ];
@@ -45,6 +45,25 @@ describe('Data router tests', () => {
         select:sandbox.stub().resolves(formattedData)
     }
 
+    describe('GET: /forecastdata', () =>{
+        beforeEach(() => {
+            sandbox.stub(Forecast, 'find').returns(findMock);
+        });
+
+        afterEach(() => {
+            sandbox.resetHistory();
+            sandbox.restore();
+        });
+
+        it('Returns correct data', async () => {
+
+            let result = await data.getForecastData(req, res);
+
+            assert.isTrue(res.send.calledOnceWith(formattedData), 'Send not called once with the data returned from DB');
+
+        });
+
+    });
 
     describe('GET: /', () => {
         beforeEach(() => {
@@ -52,7 +71,6 @@ describe('Data router tests', () => {
         });
 
         afterEach(() => {
-            sandbox.reset();
             sandbox.resetHistory();
             sandbox.restore();
         });
@@ -66,4 +84,6 @@ describe('Data router tests', () => {
         });
 
     });
+
+   
 });

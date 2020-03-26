@@ -4,12 +4,13 @@ const http = require('http');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const nodeCron = require('node-cron');
-const BatchJobs = require('./BatchJobs/index');
 const routes = require('./routes/index');
 const app = express();
 const server = http.createServer(app);
 
 dotenv.config();
+const config = require('./config');
+const BatchJobs = require('./BatchJobs/index');
 
 mongoose.connect(process.env.DB_CONNECT, {
     useNewUrlParser: true,
