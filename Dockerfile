@@ -1,5 +1,7 @@
 FROM node:12.16.1
-COPY . /www
+COPY . .
 WORKDIR /www
+ENV PORT=8080
+EXPOSE 8080
 RUN npm ci
-CMD container.start.sh
+CMD ["/bin/bash", "./container.start.sh"]
