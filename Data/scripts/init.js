@@ -12,7 +12,7 @@ mongoose.connect(process.env.DB_CONNECT, {
     // Known locations we want to use to bootstrap the database with 
     data = [
         {
-            name: 'Sout west (SW)',
+            name: 'South west (SW)',
             codes: {
                 pv_live: '22',
                 meteo_stat: '03839',

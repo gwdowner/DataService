@@ -3,14 +3,12 @@ const express = require('express');
 const http = require('http');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const nodeCron = require('node-cron');
 const routes = require('./routes/index');
 const app = express();
 const server = http.createServer(app);
 
 dotenv.config();
 const config = require('./config');
-const BatchJobs = require('./BatchJobs/index');
 
 mongoose.connect(process.env.DB_CONNECT, {
     useNewUrlParser: true,
@@ -22,14 +20,6 @@ mongoose.connect(process.env.DB_CONNECT, {
     } else {
       console.log('Connected to DB');
     }
-});
-
-// Run once the first time to generate data on startup //
-BatchJobs();
-
-// run at the end of every day at 1 minute past midnight '1 0 * * *'
-nodeCron.schedule(process.env.BATCH_UPDATE_RATE, ()=>{
-    BatchJobs();
 });
 
 app.use('/api', routes);
