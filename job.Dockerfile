@@ -1,5 +1,4 @@
 FROM node:12.16.1
-COPY . /www
-WORKDIR /www
+COPY . .
 RUN npm ci
 CMD npm run batchjob
