@@ -352,3 +352,4 @@ MigrationBackup/
 .env
 .nyc_output
 .coveralls.yml
+*.env

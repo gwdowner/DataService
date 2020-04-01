@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dataservice-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: dataservice-job
+        image: gwdowner/dataservice_job:latest
+        envFrom:
+        - secretRef:
+            name: data-service-secrets
+      restartPolicy: Never
+  backoffLimit: 4

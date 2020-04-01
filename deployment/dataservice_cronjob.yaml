@@ -1,0 +1,18 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: dataservice-cronjob
+spec:
+  schedule: "1 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: dataservice-job
+            image: gwdowner/dataservice_job:latest
+            envFrom:
+            - secretRef:
+                name: data-service-secrets
+          restartPolicy: OnFailure
+      backoffLimit: 5
