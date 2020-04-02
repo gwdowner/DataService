@@ -6,15 +6,16 @@ const config = require('../config');
 const batchJobs = require('./index');
 
 mongoose.connect(process.env.DB_CONNECT, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  (err) => {
-    if (err) {
-      console.log('Error db connection: ' + err);
-    } else {
-      console.log('Connected to DB');
-    }
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(async conn => {
+  console.log('Connected to DB');
+  await batchJobs();
+
+  return conn.disconnect();
+}).catch(err => {
+  console.log('Error db connection: ' + err);
+}).then(conn =>{
+  console.log('disconnected successfully');
 });
 
-batchJobs()

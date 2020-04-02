@@ -3,4 +3,4 @@ COPY . .
 RUN npm ci
 ENV PORT=8080
 EXPOSE 8080
-CMD ["/bin/bash", "./container.start.sh"]
+CMD ["npm", "start"]
