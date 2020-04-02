@@ -9,29 +9,27 @@ const Forecast = require('../Data/forecast')
 async function run() {
     try {
         // get latest update and set date range for data
-        console.log('getting latest update');
         const latest = await Update.findOne().sort({ timeStamp: -1 });
         var start = latest ? latest.timeStamp : new Date(process.env.DATA_START_DATE);
         var end = new Date(Date.now());
 
         // get regions
-        console.log('finding regions');
         var regions = await Region.find().exec();
         let data = [];
         let latestForecast = [];
 
         for (let i = 0; i < regions.length; i++) {
             const region = regions[i];
-            console.log(`in ${region.name} region`);
+          
             
             // get data
             let solarData = await PV_Live.getData(start.toISOString(), end.toISOString(), region.codes.pv_live).then();
-            console.log('finished collecting solar live');
+            
             let weatherData = await meteo_stat.getData(Math.floor(start.getTime() / 1000), Math.floor(end.getTime() / 1000), region.codes.meteo_stat);
-            console.log('finished collecting weather data');
+            
             let forecastData = await met_office.getData(region).then();
 
-            console.log('finished collecting data');
+            
             // merge data
             let mergedData = mergeDatasets(weatherData, solarData, region);
             data.push(...mergedData);
