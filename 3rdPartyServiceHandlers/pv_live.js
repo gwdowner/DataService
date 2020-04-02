@@ -2,19 +2,24 @@ const axios = require('axios');
 const ONE_HOUR = 1000 * 60 * 60;
 
 async function getData(start, end, pes) {
+    
     return axios
         .get(`${process.env.PROVIDER_PVL}/pes/${pes}?start=${start}&end=${end}`)
         .then(res => {
+
             let data = rawDataToSolarData(res.data.data);
             return  getDataHourly(data);
         })
-        .catch();
+        .catch(e =>{
+            console.log(e);
+        });
 }
 
 function rawDataToSolarData(rawData) {
     var solarFormatted = [];
     
     rawData.forEach(data => {
+    
         solarFormatted.push({
             region: data[0],
             time: new Date(data[1]),

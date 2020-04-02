@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const TrainingDataSchema = mongoose.Schema({
     time:{
-        type:Date,
+        type: Date,
     },
     region:{
-        type:ObjectId,
+        type: ObjectId,
         ref: 'Region'
     },
     solarMW:{
