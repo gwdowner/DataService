@@ -3,5 +3,5 @@
     "PROVIDER_METSTAT": "https://api.meteostat.net/v1",
     "PROVIDER_METOFFICE": "https://api-metoffice.apiconnect.ibmcloud.com/metoffice/production/v0",
     "PROVIDER_METOFFICE_CLIENTID": "b03c3309-4d50-453a-ad93-a4a5943b4874",
-    "DATA_START_DATE":"2016-01-01T12:00:00.000Z"
+    "DATA_START_DATE":"2019-01-01T12:00:00.000Z"
 }

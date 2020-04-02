@@ -8,6 +8,7 @@ const headers = {
 
 async function getData(region) {
     let coords = region.codes.coords;
+    
     return await axios
         .get(`${process.env.PROVIDER_METOFFICE}/forecasts/point/hourly?latitude=${coords[0]}&longitude=${coords[1]}`,
             { headers })
@@ -19,7 +20,7 @@ async function getData(region) {
                 return [];
             }
         })
-        .catch(e => { });
+        .catch(e => { console.log(e)});
 }
 
 function formatMetofficeData(data, region) {
