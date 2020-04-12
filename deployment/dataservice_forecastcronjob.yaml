@@ -1,16 +1,17 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: dataservice-cronjob
+  name: dataservice-forecastcronjob
 spec:
-  schedule: "1 0 * * *"
+  schedule: "15 * * * *"
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: dataservice-job
+          - name: dataservice-forecast-job
             image: gwdowner/dataservice_job:latest
+            command: ["npm",  "run", "batchjob:forecast"]
             imagePullPolicy: Always
             envFrom:
             - secretRef:

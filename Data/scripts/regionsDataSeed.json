@@ -1,0 +1,20 @@
+[
+    {
+        "name": "South Western England",
+        "regionCode": 22,
+        "codes": {
+            "pv_live": 22,
+            "meteo_stat": "03839",
+            "coords": [50.733997064, -3.4083317]
+        }
+    },
+    {
+        "name": "Southern England",
+        "regionCode": 20,
+        "codes": {
+            "pv_live":20,
+            "meteo_stat": "03865",
+            "coords": [51.0598, -1.3101]
+        }
+    }
+]

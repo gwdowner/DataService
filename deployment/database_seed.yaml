@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-seed
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-seed
+        envFrom:
+          - secretRef:
+              name: data-service-secrets
+        image: gwdowner/dataservice:latest
+        command: ["npm",  "run", "db:init"]
+      restartPolicy: OnFailure
+  backoffLimit: 4

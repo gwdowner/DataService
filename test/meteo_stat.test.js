@@ -80,7 +80,7 @@ describe('Meteo stat service handler tests', () => {
     });
 
     describe('#parseWeatherData()', () => {
-        it('', () => {
+        it('Parses correctly with valid data', () => {
             var result = meteo_stat.parseWeatherData(rawData);
             assert.deepEqual(result, formattedWeatherData, 'expected formatted data does not match');
 

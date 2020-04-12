@@ -1,53 +1,24 @@
 const sinon = require('sinon');
 const sandbox = sinon.createSandbox();
 const assert = require('chai').assert;
-
+const mongoose = require('mongoose');
+const modelFactories = require('../testDataFactories/modelFactories');
+const apiFactories = require('../testDataFactories/apiFactories');
+const routerFactories = require('../testDataFactories/routerFactories');
 const data = require('../../routes/data');
-
-const trainingData = require('../../Data/trainingData');
-const Forecast = require('../../Data/forecast');
+const pv_live = require('../../3rdPartyServiceHandlers/pv_live');
+const serverStrings = require('../../strings/serverStrings');
 
 describe('Data router tests', () => {
-    let req = {
+    let expectedResponse = modelFactories.validTrainingDatas(modelFactories.validRegions());
+    let {req, res} = routerFactories.reqres(sandbox);
+    
 
-    };
-    let res = {
-        send: sandbox.spy((data)=>{res})
-    };
+    describe('GET: /forecastdata', () => {
+        let validForecast = modelFactories.validForecastData(modelFactories.validRegions());
 
-   
-    let formattedData = [
-        {
-            solarMW: 325.12987,
-            temperature: 4,
-            windspeed: 11.2,
-            condition: 3,
-            time: new Date('2020-01-28T12:00:00.000Z')
-          },
-          {
-            solarMW: 818.72826,
-            temperature: 4,
-            windspeed: 38.9,
-            condition: 17,
-            time: new Date( '2020-01-28T13:00:00.000Z')
-          },
-          {
-            solarMW: 879.5980400000001,
-            temperature: 6,
-            windspeed: 20.5,
-            condition: 17,
-            time: new Date( '2020-01-28T14:00:00.000Z')
-          }
-
-    ];
-
-    let findMock = {
-        select:sandbox.stub().resolves(formattedData)
-    }
-
-    describe('GET: /forecastdata', () =>{
         beforeEach(() => {
-            sandbox.stub(Forecast, 'find').returns(findMock);
+            sandbox.stub(mongoose.Query.prototype, 'populate').resolves(validForecast);
         });
 
         afterEach(() => {
@@ -56,18 +27,23 @@ describe('Data router tests', () => {
         });
 
         it('Returns correct data', async () => {
-
             let result = await data.getForecastData(req, res);
+            assert.isTrue(res.send.calledOnceWith(validForecast), 'Send not called once with the data returned from DB');
+        });
 
-            assert.isTrue(res.send.calledOnceWith(formattedData), 'Send not called once with the data returned from DB');
-
+        it('Error when calling PV_live handles gracefully', async () => {
+            mongoose.Query.prototype.populate.restore();
+            sandbox.stub(mongoose.Query.prototype, 'populate')
+                .rejects('some error');
+            await data.getForecastData(req, res);
+            assert.deepEqual(res.send.getCall(-1).args[0], serverStrings.internal_server_error);
         });
 
     });
 
     describe('GET: /', () => {
         beforeEach(() => {
-            sandbox.stub(trainingData, 'find').returns(findMock);
+            sandbox.stub(mongoose.Query.prototype, 'populate').resolves(expectedResponse);
         });
 
         afterEach(() => {
@@ -75,15 +51,44 @@ describe('Data router tests', () => {
             sandbox.restore();
         });
 
-        it('Returns corrcect data', async () => {
+        it('Has error in DB read handles gracefully', async () => {
+            mongoose.Query.prototype.populate.restore();
+            sandbox.stub(mongoose.Query.prototype, 'populate').rejects('some error');
 
             let result = await data.getData(req, res);
+            assert.deepEqual(res.send.getCall(-1).args[0], serverStrings.internal_server_error);
+        });
 
-            assert.isTrue(res.send.calledOnceWith(formattedData), 'Send not called once with the data returned from DB');
-
+        it('Returns valid training data', async () => {
+            let result = await data.getData(req, res);
+            assert.equal(res.send.getCall(-1).args[0], expectedResponse);
         });
 
     });
 
-   
+    describe('GET: /regions', () => {
+        let validPvRegions = apiFactories.pvliveValidRegional();
+        beforeEach(() => {
+            sandbox.stub(pv_live, 'getRegions')
+                .resolves(validPvRegions);
+        });
+        afterEach(() => {
+            sandbox.resetHistory();
+            sandbox.restore();
+        });
+
+        it('Returns valid regions', async () => {
+            await data.getRegions(req, res);
+            assert.deepEqual(res.send.getCall(-1).args[0], validPvRegions);
+        });
+
+        it('Error when calling PV_live handles gracefully', async () => {
+            pv_live.getRegions.restore();
+            sandbox
+                .stub(pv_live, 'getRegions').rejects('some error');
+            await data.getRegions(req, res);
+            assert.deepEqual(res.send.getCall(-1).args[0], serverStrings.internal_server_error);
+
+        });
+    });
 });

@@ -19,7 +19,8 @@ const ForecastSchema = mongoose.Schema({
     condition: {
         type: Number,
         default: 0
-    }
+    },
+    
 
 });
 

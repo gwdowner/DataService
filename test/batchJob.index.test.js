@@ -1,6 +1,9 @@
 const sinon = require('sinon');
+const assert = require('chai').assert;
 const sandbox = sinon.createSandbox();
-
+const returnFactories = require('./testDataFactories/returnFactories');
+const apiFactories = require('./testDataFactories/apiFactories');
+const modelFactories = require('./testDataFactories/modelFactories');
 const batchJob = require('../BatchJobs/index');
 
 const PV_Live = require('../3rdPartyServiceHandlers/pv_live');
@@ -14,42 +17,22 @@ const Forecast = require('../Data/forecast');
 process.env.DATA_START_DATE = '2020-01-28T12:00:00.000Z'
 
 describe('batch job index tests', () => {
-    describe('#batchJob', () => {
-        let rawData = [
-            [0, "2020-01-27T00:00:00Z", 0.000705],
-            [0, "2020-01-27T00:30:00Z", 0.0]
-        ];
-        let formattedData = [
-            { region: 0, time: new Date(1580083200000), outputMW: 0.000705 },
-            { region: 0, time: new Date(1580085000000), outputMW: 0 }
-        ];
-
-        let formattedWeatherData = [
-            {
-                time: new Date('2020-02-07T17:00:00.000Z'),
-                temperature: 10.2,
-                windspeed: 22.2,
-                condition: 4
-            }
-        ];
-
-        let regions = [{
-            name: 'Sout west (SW)',
-            codes: {
-                pv_live: '22',
-                meteo_stat: '03839'
-            }
-        }];
-
-        let latest = new Update({ timeStamp: new Date('2020-01-28T12:00:00.000Z') });
-
+    describe('#runHistJob()', () => {
+        let rawData = apiFactories.pvliveValidHistoric();
+        let formattedData = returnFactories.formattedPvliveData();
+        let formattedWeatherData = returnFactories.formattedMeteostatData();
+        let regions = modelFactories.validRegions();
+        let latest = new Update(modelFactories.validUpdate());
         let mockFindOne = {
         }
+        let latestUpdate = [
+            { _id: '5e8f413ee32fef21248465f4', time: new Date('2020-04-10T12:50:03.594Z') },
+            { _id: '5e8f413ee32fef21248465f3', time: new Date('2020-04-10T12:50:02.895Z') }
+        ];
 
         beforeEach(() => {
             sandbox.stub(meteo_stat, 'getData').returns(formattedWeatherData);
-
-            sandbox.stub(Region, 'find').returns({ exec: () => { return regions; } });
+            sandbox.stub(Region, 'find').resolves(regions);
             sandbox.stub(trainingData, 'insertMany').resolves({});
             sandbox.stub(Forecast, 'deleteMany').resolves({});
             sandbox.stub(Forecast, 'exists').returns(false);
@@ -58,10 +41,9 @@ describe('batch job index tests', () => {
             sandbox.stub(met_office, 'getData').resolves(formattedData);
             sandbox.stub(Update, 'findOne').returns(mockFindOne);
             sandbox.stub(Update.prototype, 'save').returns();
+            sandbox.stub(Update, 'getLatestUpdateByRegion').returns(latestUpdate);
             sandbox.stub(console, 'log').returns();
-            mockFindOne.sort = sandbox.spy(() => {
-                return latest;
-            });
+
         });
 
         afterEach(() => {
@@ -71,41 +53,69 @@ describe('batch job index tests', () => {
         });
 
         it('All valid data', async () => {
+            console.log('in valid data');
+            await batchJob.runHistJob();
 
-            await batchJob();
-            sandbox.assert.calledOnce(Update.findOne);
-            sandbox.assert.calledOnce(mockFindOne.sort);
-            sandbox.assert.calledOnce(PV_Live.getData);
+            sandbox.assert.calledTwice(PV_Live.getData);
             sandbox.assert.calledOnce(trainingData.insertMany);
-            sandbox.assert.calledOnce(Update.prototype.save);
-
+            sandbox.assert.calledTwice(Update.prototype.save);
+            assert.deepEqual(trainingData.insertMany.args[0][0], modelFactories.validTrainingDatas(regions));
         });
 
         it('Error thrown with connections, error handdled', async () => {
             // set the method to throw an error
+            let error = 'Error: Some error thrown';
             PV_Live.getData.restore();
-            sandbox.stub(PV_Live, 'getData').throws('Error: Some error thrown');
+            sandbox.stub(PV_Live, 'getData').throws(error);
 
-            await batchJob();
 
-            sandbox.assert.calledOnce(Update.findOne);
-            sandbox.assert.calledOnce(mockFindOne.sort);
+            await batchJob.runHistJob();
             sandbox.assert.calledOnce(PV_Live.getData);
-            sandbox.assert.calledOnce(console.log);
+            //sandbox.assert.calledWith(console.log, );
+            assert.equal(console.log.getCall(-1).args[0], error);
         });
 
 
         it('first time no updates in db', async () => {
-            mockFindOne.sort = sandbox.spy(() => {
-                return null;
-            });
-            await batchJob();
-            sandbox.assert.calledOnce(Update.findOne);
-            sandbox.assert.calledOnce(mockFindOne.sort);
-            sandbox.assert.calledOnce(PV_Live.getData);
-            sandbox.assert.calledOnce(trainingData.insertMany);
-            sandbox.assert.calledOnce(Update.prototype.save);
 
+            await batchJob.runHistJob();
+            //sandbox.assert.calledOnce(Update.findOne);
+
+            sandbox.assert.calledTwice(PV_Live.getData);
+            sandbox.assert.calledTwice(Update.prototype.save);
+            sandbox.assert.calledOnce(trainingData.insertMany);
+            assert.deepEqual(trainingData.insertMany.args[0][0], modelFactories.validTrainingDatas(regions));
         });
+    });
+
+    describe('#runForecastJob', () => {
+        const validRegions = modelFactories.validRegions();
+        const validForecast = modelFactories.validForecastData(validRegions);
+
+        beforeEach(() => {
+            sandbox.stub(Region, 'find').resolves(validRegions);
+            sandbox
+                .stub(met_office, 'getData')
+                .onCall(0).resolves([validForecast[0]])
+                .onCall(1).resolves([validForecast[1]]);
+            sandbox.stub(Forecast, 'deleteMany').resolves({});
+            sandbox.stub(Forecast, 'exists')
+                .onCall(0).resolves(true)
+                .onCall(1).resolves(false);
+            sandbox.stub(Forecast.prototype, 'save').returns({});
+            sandbox.stub(Forecast,'updateOne').resolves({});
+        });
+        afterEach(() => {
+            sandbox.reset();
+            sandbox.resetHistory();
+            sandbox.restore();
+        });
+
+        it('Gets valid forecast + adds to DB', async () => {
+            await batchJob.runForecastJob();
+            sandbox.assert.calledOnce(Forecast.prototype.save);
+            sandbox.assert.calledOnce(Forecast.updateOne); 
+        });
+
     });
 });

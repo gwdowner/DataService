@@ -10,7 +10,7 @@ mongoose.connect(process.env.DB_CONNECT, {
   useUnifiedTopology: true,
 }).then(async conn => {
   console.log('Connected to DB');
-  await batchJobs();
+  await batchJobs.runForecastJob();
 
   return conn.disconnect();
 }).catch(err => {

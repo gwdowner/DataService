@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 
 const RegionSchema = mongoose.Schema({
     name:{
-        type:String,
+        type: String,
+    },
+    regionCode:{
+        type: Number
     },
     codes:{
         type:Object,

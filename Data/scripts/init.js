@@ -1,36 +1,34 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const Region = require('../region');
+const regionsData = require('./regionsDataSeed.json');
 
 dotenv.config();
 
+console.log('Connecting to DB...');
 mongoose.connect(process.env.DB_CONNECT, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(async conn => {
-    await Region.deleteMany().exec();
-    // Known locations we want to use to bootstrap the database with 
-    data = [
-        {
-            name: 'South west (SW)',
-            codes: {
-                pv_live: '22',
-                meteo_stat: '03839',
-                coords: [50.733997064, -3.4083317]
-            }
+    data = regionsData;
+    newItems = [];
+    for(let element of data){
+        let tmpRegion = await Region.findOne({ regionCode: element.regionCode }).then();
+        
+        if (tmpRegion) {
+            console.log(`Updating region ${element.name}`);
+            await tmpRegion.set(element).save();
+            
+        } else {
+            console.log(`Creating region ${element.name}`);
+           let newRegion = await new Region(element).save();
         }
-    ];
-
-    Region.insertMany(data).then(res => {
-        console.log('Inserted regions sucessfully');
-
-        return conn.disconnect();
-    }).catch(err => {
-        console.log('Failed to initialise regions: \n', err);
-    }).then(res => {
-        console.log('disconnected sucessfully');
-    });
+    }
+    
+    return conn.disconnect();
+  
 
 
-}).catch(err => { console.log(err); });
-
+}).catch(err => { console.log(err); }).then(res =>{
+    console.log('DISCONECTED SUCESSFULLY...')
+});
