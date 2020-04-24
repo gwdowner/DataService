@@ -1,19 +1,21 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: dataservice-cronjob
+  name: dataservice-hist-cronjob
 spec:
+  successfulJobsHistoryLimit: 3
   schedule: "1 0 * * *"
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: dataservice-job
-            image: gwdowner/dataservice_job:latest
+          - name: dataservice-hist-job
+            image: gwdowner/dataservice:latest
+            command: ["npm",  "run", "batchjob:hist"]
             imagePullPolicy: Always
             envFrom:
             - secretRef:
-                name: data-service-secrets
+                name: data-service
           restartPolicy: OnFailure
       backoffLimit: 5

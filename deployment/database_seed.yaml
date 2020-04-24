@@ -9,7 +9,7 @@ spec:
       - name: db-seed
         envFrom:
           - secretRef:
-              name: data-service-secrets
+              name: data-service
         image: gwdowner/dataservice:latest
         command: ["npm",  "run", "db:init"]
       restartPolicy: OnFailure

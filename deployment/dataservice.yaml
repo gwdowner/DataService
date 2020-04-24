@@ -23,7 +23,7 @@ spec:
       containers:
         - envFrom:
             - secretRef:
-                name: data-service-secrets
+                name: data-service
           image: gwdowner/dataservice:latest
           imagePullPolicy: Always
           name: dataservice
