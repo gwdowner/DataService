@@ -94,5 +94,77 @@
                 -4.5667
             ]
         }
+    },
+    {
+        "name": "Merseyside and Northern Wales",
+        "regionCode": 13,
+        "codes": {
+            "pv_live": 13,
+            "meteo_stat": "03321",
+            "coords": [
+                53.1667,
+                -2.9833
+            ]
+        }
+    },
+    {
+        "name": "North Western England",
+        "regionCode": 16,
+        "codes": {
+            "pv_live": 16,
+            "meteo_stat": "03318",
+            "coords": [
+                53.7667,
+                -3.0333
+            ]
+        }
+    },
+    {
+        "name": "Yorkshire",
+        "regionCode": 23,
+        "codes": {
+            "pv_live": 23,
+            "meteo_stat": "03347",
+            "coords": [
+                53.8000,
+                -1.5500
+            ]
+        }
+    },
+    {
+        "name": "North Eastern England",
+        "regionCode": 15,
+        "codes": {
+            "pv_live": 15,
+            "meteo_stat": "03275",
+            "coords": [
+                54.5530,
+                -0.8899
+            ]
+        }
+    },
+    {
+        "name": "Southern Scotland",
+        "regionCode": 18,
+        "codes": {
+            "pv_live": 18,
+            "meteo_stat": "03162",
+            "coords": [
+                55.3167,
+                -3.2000
+            ]
+        }
+    },
+    {
+        "name": "Northern Scotland",
+        "regionCode": 17,
+        "codes": {
+            "pv_live": 17,
+            "meteo_stat": "03063",
+            "coords": [
+                57.2000,
+                -3.8333
+            ]
+        }
     }
 ]
