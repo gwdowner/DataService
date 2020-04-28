@@ -16,5 +16,23 @@
             "meteo_stat": "03865",
             "coords": [51.0598, -1.3101]
         }
+    },
+    {
+        "name": "South Eastern England",
+        "regionCode": 19,
+        "codes": {
+            "pv_live":19,
+            "meteo_stat": "03882",
+            "coords": [50.8893, 0.3224]
+        }
+    },
+    {
+        "name": "London",
+        "regionCode": 12,
+        "codes": {
+            "pv_live":12,
+            "meteo_stat": "03779",
+            "coords": [51.5167, -0.1167]
+        }
     }
 ]

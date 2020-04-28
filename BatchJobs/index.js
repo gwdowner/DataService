@@ -27,6 +27,7 @@ async function runHistJob() {
 
         for (let i = 0; i < regions.length; i++) {
             const region = regions[i];
+            console.log(`Region = ${region.name}`);
 
             // get latest update and set date range for data
             const latest = latestUpdateByRegion.find(x => region._id.toString() == x._id);
@@ -58,8 +59,7 @@ async function runHistJob() {
 
 function mergeDatasets(weatherData, solarData, region) {
     let dataset = [];
-
-    weatherData.forEach((element) => {
+    for(let element of weatherData){
         let solarPoint = solarData.find(x => x.time.getTime() === element.time.getTime());
         if (solarData) {
             let newData = {
@@ -69,7 +69,7 @@ function mergeDatasets(weatherData, solarData, region) {
             }
             dataset.push(newData);
         }
-    });
+    }
 
     return dataset;
 }
