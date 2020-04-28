@@ -5,34 +5,94 @@
         "codes": {
             "pv_live": 22,
             "meteo_stat": "03839",
-            "coords": [50.733997064, -3.4083317]
+            "coords": [
+                50.733997064,
+                -3.4083317
+            ]
         }
     },
     {
         "name": "Southern England",
         "regionCode": 20,
         "codes": {
-            "pv_live":20,
+            "pv_live": 20,
             "meteo_stat": "03865",
-            "coords": [51.0598, -1.3101]
+            "coords": [
+                51.0598,
+                -1.3101
+            ]
         }
     },
     {
         "name": "South Eastern England",
         "regionCode": 19,
         "codes": {
-            "pv_live":19,
+            "pv_live": 19,
             "meteo_stat": "03882",
-            "coords": [50.8893, 0.3224]
+            "coords": [
+                50.8893,
+                0.3224
+            ]
         }
     },
     {
         "name": "London",
         "regionCode": 12,
         "codes": {
-            "pv_live":12,
+            "pv_live": 12,
             "meteo_stat": "03779",
-            "coords": [51.5167, -0.1167]
+            "coords": [
+                51.5167,
+                -0.1167
+            ]
+        }
+    },
+    {
+        "name": "Eastern England",
+        "regionCode": 10,
+        "codes": {
+            "pv_live": 10,
+            "meteo_stat": "03590",
+            "coords": [
+                52.1167,
+                0.9667
+            ]
+        }
+    },
+    {
+        "name": "East Midlands",
+        "regionCode": 11,
+        "codes": {
+            "pv_live": 11,
+            "meteo_stat": "03379",
+            "coords": [
+                53.0333,
+                -0.5000
+            ]
+        }
+    },
+    {
+        "name": "West Midlands",
+        "regionCode": 14,
+        "codes": {
+            "pv_live": 14,
+            "meteo_stat": "03534",
+            "coords": [
+                52.4524,
+                -1.7435
+            ]
+        }
+    },
+    {
+        "name": "Southern Wales",
+        "regionCode": 21,
+        "codes": {
+            "pv_live": 21,
+            "meteo_stat": "03502",
+            "coords": [
+                52.1333,
+                -4.5667
+            ]
         }
     }
 ]
